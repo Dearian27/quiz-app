@@ -25,7 +25,7 @@ const VariantQuestion = ({
   question: QuestionParams;
   index: number;
 }) => {
-  const { addVariant, deleteQuestion, updateVariantQuestion } =
+  const { addVariant, deleteQuestion, changePoints, updateVariantQuestion } =
     useQuestionContext();
   const [showOutline, setShowOutline] = useState(false);
 
@@ -36,15 +36,30 @@ const VariantQuestion = ({
         showOutline ? "!border-[red]" : ""
       )}
     >
-      <div>
-        <span className="text-lg">{index + 1}.</span>
-        <input
-          className={"text-lg px-1 outline-none"}
-          type="text"
-          placeholder={"Question"}
-          value={question.text}
-          onChange={(e) => updateVariantQuestion(question.id, e.target.value)}
-        />
+      <div className="flex justify-between items-center w-[100%]">
+        <span>
+          <span className="text-lg">{index + 1}.</span>
+          <input
+            className={"text-lg px-1 outline-none"}
+            type="text"
+            placeholder={"Question"}
+            value={question.text}
+            onChange={(e) => updateVariantQuestion(question.id, e.target.value)}
+          />
+        </span>
+
+        <span>
+          <input
+            value={question.points}
+            onChange={(e) => changePoints(question.id, e)}
+            className="outline-none text-md w-[3.6ch] bg-slate-200 rounded-md px-1 mx-1 text-right"
+            type="number"
+            min={1}
+            max={100}
+            maxLength={2}
+          />
+          points
+        </span>
       </div>
       <div className={"flex flex-col gap-1 py-1"}>
         {isInputQuestionParams(question) ? (

@@ -1,14 +1,16 @@
 "use client";
-import { useContext, createContext } from "react";
-import { QuestionTypeVariants } from "../../(pages)/quiz/create/page";
+import { useContext, createContext, ChangeEvent } from "react";
+import { QuestionTypeVariants } from "../../(pages)/editor/page";
 
 export type InputQuestionParams = {
+  points: number;
   type: "input";
   id: number;
   text: string;
   answer: string;
 };
 export type VariantQuestionParams = {
+  points: number;
   type: "radio" | "checkbox";
   id: number;
   text: string;
@@ -41,6 +43,7 @@ export interface QuestionContextParams {
     type: QuestionTypeVariants
   ) => void;
   updateInputText: (id: number, value: string) => void;
+  changePoints: (id: number, value: ChangeEvent<HTMLInputElement>) => void;
 }
 
 export const QuestionContext = createContext<QuestionContextParams>(null!);

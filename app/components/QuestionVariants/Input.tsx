@@ -5,7 +5,7 @@ const Input = ({ answer, id }: { answer: string; id: number }) => {
   const { updateInputText } = useQuestionContext();
 
   return (
-    <div>
+    <div className="flex w-[100%] justify-between">
       <input
         className="outline-none text-md"
         type="text"

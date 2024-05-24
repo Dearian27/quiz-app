@@ -26,10 +26,12 @@ const Header = ({
           {type === "default" && (
             <>
               <SearchBar />
-              <button className="flex items-center text-white bg-[#4c4cff] py-2 px-4 font-bold rounded-md">
-                <MdAdd color="white" size="1.6rem" />
-                Створити
-              </button>
+              <Link href="/editor">
+                <button className="flex items-center text-white bg-[#4c4cff] py-2 px-4 font-bold rounded-md">
+                  <MdAdd color="white" size="1.6rem" />
+                  Створити
+                </button>
+              </Link>
             </>
           )}
         </div>

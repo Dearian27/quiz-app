@@ -3,7 +3,7 @@ import React, { useState } from "react";
 import { useQuestionContext, VariantParams } from "./QuestionProvider";
 import { MdDelete } from "react-icons/md";
 import classNames from "classnames";
-import { QuestionTypeVariants } from "@/app/(pages)/quiz/create/page";
+import { QuestionTypeVariants } from "@/app/(pages)/editor/page";
 
 const Variant = ({
   variant,
@@ -41,13 +41,7 @@ const Variant = ({
           className={"outline-none"}
           value={variant.text}
           onChange={(e) => updateVariant(id, index, e.target.value)}
-          placeholder={
-            type === "checkbox" || type === "radio"
-              ? "Відповідь"
-              : type === "input"
-              ? "Переклад"
-              : ""
-          }
+          placeholder="Відповідь"
           type="text"
         />
       </div>
@@ -59,7 +53,6 @@ const Variant = ({
           onMouseOver={() => {
             if (!noDelete) setShowOutline(true);
           }}
-          className={"button"}
           disabled={noDelete}
           onClick={() => deleteVariant(id, index)}
         >
