@@ -36,12 +36,12 @@ const VariantQuestion = ({
         showOutline ? "!border-[red]" : ""
       )}
     >
-      <div className={"question"}>
+      <div>
         <span className="text-lg">{index + 1}.</span>
         <input
           className={"text-lg px-1 outline-none"}
           type="text"
-          placeholder={"Запитання"}
+          placeholder={"Question"}
           value={question.text}
           onChange={(e) => updateVariantQuestion(question.id, e.target.value)}
         />
@@ -68,12 +68,11 @@ const VariantQuestion = ({
       </div>
       <div className={"flex gap-1 justify-start"}>
         {question.type !== "input" && (
-          <button className={"button"} onClick={() => addVariant(question.id)}>
+          <button onClick={() => addVariant(question.id)}>
             <FaPlus size={"1.3rem"} />
           </button>
         )}
         <button
-          className={"button"}
           onClick={() => deleteQuestion(question.id)}
           onMouseOver={() => setShowOutline(true)}
           onMouseOut={() => setShowOutline(false)}

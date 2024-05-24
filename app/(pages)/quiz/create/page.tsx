@@ -5,28 +5,31 @@ import {
   VariantParams,
   QuestionParams,
 } from "@/app/components/QuestionVariants/QuestionProvider";
-
-import { IoIosAddCircleOutline } from "react-icons/io";
 import toast from "react-hot-toast";
 import QuestionVariants, {
   isInputQuestionParams,
 } from "@/app/components/QuestionVariants";
 import classNames from "classnames";
+import { MdAdd } from "react-icons/md";
+import { MdOutlineTimerOff } from "react-icons/md";
+import { RiTimerLine } from "react-icons/ri";
 
 export type QuestionTypeVariants = "radio" | "checkbox" | "input";
 
 const CreateQuiz = () => {
-  const [type, setType] = useState<QuestionTypeVariants>("radio");
   const [quiz, setQuiz] = useState<Array<QuestionParams>>(null!);
 
   const [addTimer, setAddTimer] = useState(true);
   const [minutes, setMinutes] = useState(0);
   const [seconds, setSeconds] = useState(0);
 
-  const addNewQuestion = useCallback((currentType: QuestionTypeVariants) => {
-    setQuiz((prev) => {
+  const [title, setTitle] = useState("");
+  const [description, setDescription] = useState("");
+
+  const addNewQuestion = useCallback((type: QuestionTypeVariants) => {
+    setQuiz((prev: any[]) => {
       const item =
-        currentType === "input"
+        type === "input"
           ? {
               type: "input",
               id: 0,
@@ -34,7 +37,7 @@ const CreateQuiz = () => {
               answer: "",
             }
           : {
-              type: currentType,
+              type: type,
               id: 0,
               text: "",
               variants: [{ isRight: false, text: "" }],
@@ -59,7 +62,7 @@ const CreateQuiz = () => {
   const deleteVariant = useCallback((questionId: number, variantId: number) => {
     setQuiz((prev) => {
       return prev.map((question) => {
-        if (question.id === questionId) {
+        if (question.id === questionId && !isInputQuestionParams(question)) {
           const updatedVariants = question.variants.filter(
             (_, index) => index !== variantId
           );
@@ -89,7 +92,7 @@ const CreateQuiz = () => {
     (questionId: number, variantIndex: number, text: string) => {
       setQuiz((prev) =>
         prev.map((question) => {
-          if (question.id === questionId) {
+          if (question.id === questionId && !isInputQuestionParams(question)) {
             const updatedVariants = question.variants.map((variant, index) =>
               index === variantIndex ? { ...variant, text } : variant
             );
@@ -114,9 +117,6 @@ const CreateQuiz = () => {
     },
     []
   );
-  const changeType = useCallback((newType: QuestionTypeVariants) => {
-    setType(newType);
-  }, []);
   const setRightVariant = useCallback(
     (
       value: boolean,
@@ -169,59 +169,78 @@ const CreateQuiz = () => {
       toast.error("Додайте більше ніж 1 запитання");
       return;
     }
-    if (type !== "input") {
-      let qlError = false;
-      // quiz.map((question) => {
-      //   if (question?.variants.length < 2) qlError = true;
-      // });
 
-      if (qlError) {
-        toast.error("Мають бути як мінімум 2 варіанти відповіді");
+    let isError = false;
+
+    quiz.map((question) => {
+      if (isError) {
         return;
       }
-    }
-
-    let noWrongAnswer = false;
-    let variantsTextError = false;
-    quiz.map((q) => {
-      if (!q.variants.find((v) => v.isRight === true)) {
-        noWrongAnswer = true;
+      if (isInputQuestionParams(question)) {
+        if ((!question.answer || !question.text) && !isError) {
+          isError = true;
+          toast.error("Please fill in all required fields");
+          return;
+        }
+      } else {
+        if (!question.text && !isError) {
+          isError = true;
+          toast.error("Please fill in all required fields");
+          return;
+        } else if (question.variants.length <= 1 && !isError) {
+          isError = true;
+          toast.error("You need to have at least 2 answer options");
+          return;
+        }
+        question.variants.map((variant) => {
+          if (!variant.text && !isError) {
+            isError = true;
+            toast.error("Please fill in all required fields");
+            return;
+          }
+        });
+        if (!question.variants.find((v) => v.isRight === true) && !isError) {
+          isError = true;
+          toast.error("Please add at least one right option");
+          return;
+        }
       }
-      if (!q.question) variantsTextError = true;
-      q.variants.map((v) => {
-        if (!v.text) variantsTextError = true;
-      });
     });
-    if (variantsTextError) {
-      toast.error("Заповніть усі запитання та відповіді");
-      return;
+    if ((!title || !description) && !isError) {
+      toast.error("Please fill in all required fields");
+      isError = true;
     }
-    if (noWrongAnswer) {
-      toast.error("Додайте хоч одну правильну відповідь у запитання");
-      return;
+    if (addTimer) {
+      if (seconds + minutes * 60 < 60) {
+        toast.error("Minimum 60 seconds timer required");
+        isError = true;
+      }
     }
-
+    if (isError) return;
     sendData();
   };
-  const sendData = async () => {
-    const q = quiz.map((q) => {
-      return { question: q.text, variants: q?.variants };
-    });
-    // const data = { questions: q };
-    // console.log("data", data);
 
+  const sendData = async () => {
+    const data = quiz.map((q) => {
+      const { id, ...others } = q;
+      if (addTimer) return { ...others, time: seconds + minutes * 60 };
+      return others;
+    });
     try {
-      // const res = await axios.post("/api/tests/create", data);
-      // console.log(res);
-      // if (res.status === 200) {
-      //   toast.success("Тест створено успішно");
-      //   return;
-      // }
-      toast.error("Щось пішло не так");
-      return;
+      const storageQuizes = await JSON.parse(
+        localStorage.getItem("quizes") || "[]"
+      );
+      const uniqueId =
+        storageQuizes.reduce(
+          (acc: number, next: QuestionParams) =>
+            acc < next.id ? next.id : acc,
+          0
+        ) + 1;
+      storageQuizes.push({ title, description, questions: data, id: uniqueId });
+      localStorage.setItem("quizes", JSON.stringify(storageQuizes));
+      toast.success("Test created successfully");
     } catch (err) {
-      toast.error("Щось пішло не так");
-      return;
+      toast.error("Something went wrong");
     }
   };
   const updateInputText = (id: number, value: string) => {
@@ -234,7 +253,6 @@ const CreateQuiz = () => {
       });
     });
   };
-
   const handleTimeChange = (
     event: ChangeEvent<HTMLInputElement>,
     state: "seconds" | "minutes"
@@ -255,8 +273,6 @@ const CreateQuiz = () => {
   return (
     <QuestionContext.Provider
       value={{
-        type,
-        changeType,
         questions: quiz,
         addVariant,
         addNewQuestion,
@@ -268,94 +284,118 @@ const CreateQuiz = () => {
         updateInputText,
       }}
     >
-      <div className="flex items-center gap-4">
-        <section className="flex gap-2 rounded-lg px-3 py-2 bg-white ">
-          <div
-            className={classNames(
-              "px-3 py-1 rounded-md text-lg transition cursor-pointer select-none bg-[#4c4cff] text-white font-bold"
-            )}
-            onClick={() => {
-              changeType("radio");
-              addNewQuestion("radio");
-            }}
-          >
-            Radio button
-          </div>
-          <div
-            className={classNames(
-              "px-3 py-1  rounded-md text-lg transition cursor-pointer select-none bg-[#4c4cff] text-white font-bold"
-            )}
-            onClick={() => {
-              changeType("checkbox");
-              addNewQuestion("checkbox");
-            }}
-          >
-            Checkbox
-          </div>
-          <div
-            className={classNames(
-              "px-3 py-1 rounded-md text-lg  transition cursor-pointer select-none, bg-[#4c4cff] text-white font-bold"
-            )}
-            onClick={() => {
-              changeType("input");
-              addNewQuestion("input");
-            }}
-          >
-            Input
-          </div>
-        </section>
-        <section>
-          <span className="p-1 font-bold rounded-md text-4xl mr-2">Timer:</span>
+      <div className="pt-24 min-h-[100vh] w-[100%] justify-stretch box-border grid gap-4 grid-rows-[auto_1fr_auto]">
+        <div className="flex gap-4 items-center h-10">
           <input
-            className="p-2 font-bold rounded-md w-14 text-3xl"
-            maxLength={2}
-            max={59}
-            type="number"
-            value={minutes}
-            onChange={(e) => handleTimeChange(e, "minutes")}
+            value={title}
+            onChange={(e) => setTitle(e.target.value)}
+            type="text"
+            placeholder="Title"
+            className="px-4 py-2 text-xl rounded-md"
           />
-          <span className="p-1 font-bold rounded-md text-4xl">:</span>
           <input
-            className="p-2 font-bold rounded-md w-14 text-3xl"
-            value={seconds}
-            onChange={(e) => handleTimeChange(e, "seconds")}
-            max={59}
-            maxLength={2}
-            type="number"
+            value={description}
+            onChange={(e) => setDescription(e.target.value)}
+            type="text"
+            placeholder="Description"
+            className="px-4 py-2 text-xl rounded-md"
           />
-        </section>
-      </div>
-      {quiz?.length && (
-        <div className={"w-[100%] flex flex-col gap-4"}>
-          {quiz?.map((question, index) => {
-            return (
-              <QuestionVariants
-                index={index}
-                key={question.id}
-                question={question}
+          <button
+            onClick={() => setAddTimer((prev) => !prev)}
+            className="h-11 w-11 bg-white rounded-md flex items-center justify-center"
+          >
+            {addTimer ? (
+              <RiTimerLine color="#64e41f" size={"2rem"} />
+            ) : (
+              <MdOutlineTimerOff color="#ff411f" size={"2rem"} />
+            )}
+          </button>
+          {addTimer && (
+            <section className="flex items">
+              {/* <span className="p-1 font-bold rounded-md text-3xl mr-2">
+              Timer:
+            </span> */}
+              <input
+                className="p-2 font-bold rounded-md w-14 text-3xl"
+                maxLength={2}
+                max={59}
+                type="number"
+                value={minutes}
+                onChange={(e) => handleTimeChange(e, "minutes")}
               />
-            );
-          })}
+              <span className="p-1 font-bold rounded-md text-4xl">:</span>
+              <input
+                className="p-2 font-bold rounded-md w-14 text-3xl"
+                value={seconds}
+                onChange={(e) => handleTimeChange(e, "seconds")}
+                max={59}
+                maxLength={2}
+                type="number"
+              />
+            </section>
+          )}
         </div>
-      )}
-      <div className={"flex gap-4"}>
-        <button
-          onClick={() => addNewQuestion(type)}
-          className={
-            "py-2 px-4 rounded-md bg-[#4c4cff] text-white font-bold flex items-center gap-2"
-          }
-        >
-          <IoIosAddCircleOutline size={"1.6rem"} color="white" />
-          Нове запитання
-        </button>
-        <button
-          onClick={checkData}
-          className={
-            "py-2 px-4 rounded-md bg-white border-[#4c4cff] border-4 text-[#4c4cff] items-center font-bold flex gap-2"
-          }
-        >
-          Створити
-        </button>
+        <div>
+          {quiz?.length && (
+            <div className={"w-[100%] flex flex-col gap-4"}>
+              {quiz?.map((question, index) => {
+                return (
+                  <QuestionVariants
+                    index={index}
+                    key={question.id}
+                    question={question}
+                  />
+                );
+              })}
+            </div>
+          )}
+        </div>
+        <div className={"flex items-center gap-4 py-4 justify-between"}>
+          <section className="flex gap-2 rounded-lg px-3 py-2 bg-white ">
+            <div
+              className={classNames(
+                "flex gap-1 items-center  pr-3 py-1 pl-2 rounded-md text-lg transition cursor-pointer select-none border-4 border-[#4c4cff] text-[#4c4cff] font-bold"
+              )}
+              onClick={() => {
+                addNewQuestion("radio");
+              }}
+            >
+              <MdAdd size={"1.5rem"} />
+              Radio button
+            </div>
+            <div
+              className={classNames(
+                "flex gap-1 items-center pr-3 py-1 pl-2 rounded-md text-lg transition cursor-pointer select-none border-4 border-[#4c4cff] text-[#4c4cff] font-bold"
+              )}
+              onClick={() => {
+                addNewQuestion("checkbox");
+              }}
+            >
+              <MdAdd size={"1.5rem"} />
+              Checkbox
+            </div>
+            <div
+              className={classNames(
+                "flex gap-1 items-center pr-3 py-1 pl-2 rounded-md text-lg  transition cursor-pointer select-none border-4 border-[#4c4cff] text-[#4c4cff] font-bold"
+              )}
+              onClick={() => {
+                addNewQuestion("input");
+              }}
+            >
+              <MdAdd size={"1.5rem"} />
+              Input
+            </div>
+          </section>
+
+          <button
+            onClick={checkData}
+            className={
+              "py-2 px-5 rounded-md bg-[#4c4cff] text-[white] text-lg items-center font-bold flex gap-2"
+            }
+          >
+            Створити
+          </button>
+        </div>
       </div>
     </QuestionContext.Provider>
   );

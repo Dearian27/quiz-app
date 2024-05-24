@@ -23,11 +23,6 @@ export interface VariantParams {
 export type QuestionParams = VariantQuestionParams | InputQuestionParams;
 
 export interface QuestionContextParams {
-  type: QuestionTypeVariants;
-  changeType: (
-    newType: QuestionTypeVariants,
-    currentType: QuestionTypeVariants
-  ) => void;
   questions: Array<QuestionParams>;
   updateVariantQuestion: (id: number, text: string) => void;
   addNewQuestion: (currentType: QuestionTypeVariants) => void;
