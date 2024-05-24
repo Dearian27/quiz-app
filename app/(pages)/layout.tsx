@@ -8,8 +8,8 @@ export default function RootLayout({
 }>) {
   return (
     <main>
-      <Header />
-      <div className=" min-h-fit gap-6 gap-x-8 py-12 w-[1200px] mx-auto flex flex-col items-start">
+      <Header absolute type="edit" />
+      <div className="box-border min-h-[100vh] gap-6 gap-x-8 w-[1200px] mx-auto flex flex-col items-start">
         {children}
       </div>
     </main>
