@@ -1,9 +1,10 @@
 "use client";
 import { useContext, createContext } from "react";
-import { QuestionTypeVariants } from "../../create/page";
+import { QuestionTypeVariants } from "../../editor/[id]/page";
 import { QuizParams } from "@/app/page";
 
 export type VariantQuestionTestParams = {
+  points: number;
   type: "radio" | "checkbox";
   id: number;
   text: string;
@@ -11,6 +12,7 @@ export type VariantQuestionTestParams = {
 };
 
 export type InputTestParams = {
+  points: number;
   type: "input";
   id: number;
   text: string;
