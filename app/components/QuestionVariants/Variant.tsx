@@ -3,7 +3,7 @@ import React, { useState } from "react";
 import { useQuestionContext, VariantParams } from "./QuestionProvider";
 import { MdDelete } from "react-icons/md";
 import classNames from "classnames";
-import { QuestionTypeVariants } from "@/app/(pages)/editor/page";
+import { QuestionTypeVariants } from "@/app/(pages)/editor/[id]/page";
 
 const Variant = ({
   variant,

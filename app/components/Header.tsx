@@ -3,6 +3,7 @@ import SearchBar from "./SearchBar";
 import { MdAdd } from "react-icons/md";
 import classNames from "classnames";
 import Link from "next/link";
+import { FaGithub } from "react-icons/fa";
 
 const Header = ({
   absolute = false,
@@ -26,12 +27,17 @@ const Header = ({
           {type === "default" && (
             <>
               <SearchBar />
-              <Link href="/editor">
-                <button className="flex items-center text-white bg-[#4c4cff] py-2 px-4 font-bold rounded-md">
-                  <MdAdd color="white" size="1.6rem" />
-                  Створити
-                </button>
-              </Link>
+              <div className="flex gap-4 items-center">
+                <Link href={""}>
+                  <FaGithub size={"2.2rem"} />
+                </Link>
+                <Link href="/editor/new">
+                  <button className="flex items-center text-white bg-[#4c4cff] py-2 px-4 font-bold rounded-md">
+                    <MdAdd color="white" size="1.6rem" />
+                    Створити
+                  </button>
+                </Link>
+              </div>
             </>
           )}
         </div>

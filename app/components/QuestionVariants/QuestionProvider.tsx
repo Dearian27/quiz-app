@@ -1,6 +1,6 @@
 "use client";
 import { useContext, createContext, ChangeEvent } from "react";
-import { QuestionTypeVariants } from "../../(pages)/editor/page";
+import { QuestionTypeVariants } from "../../(pages)/editor/[id]/page";
 
 export type InputQuestionParams = {
   points: number;

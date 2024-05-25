@@ -10,9 +10,8 @@ export const AppContext = createContext<AppContextParams>(null!);
 
 export const useAppContext = () => {
   const props = useContext(AppContext);
-  // console.log(props?.questions);
   if (!props) {
-    throw new Error("No ContextParams provided");
+    throw new Error("No AppContext provided");
   }
   return props;
 };
