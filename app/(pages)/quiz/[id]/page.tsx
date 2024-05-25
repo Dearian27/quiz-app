@@ -57,7 +57,7 @@ export default function Page({ params }: QuizPageProps) {
     currentQuiz.questions.map((question) => {
       let isRight = true;
       if (isInputQuestionParams(question)) {
-        if (question.answer !== question.userAnswer) isRight = false;
+        if (question.answer !== question?.userAnswer) isRight = false;
       } else {
         question.variants.map((variant) => {
           if (variant.checked !== variant.isRight) {
@@ -223,7 +223,7 @@ export default function Page({ params }: QuizPageProps) {
                 : "балів"}
             </span>
           </h2>
-          {currentQuiz?.questions?.[qNumber].type === "input" ? (
+          {isInputQuestionParams(currentQuiz?.questions?.[qNumber]) ? (
             <>
               <input
                 className="bg-slate-200 rounded-md py-1 px-2 text-lg"
