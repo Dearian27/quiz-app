@@ -18,100 +18,187 @@ export type QuizParams = {
 const quizesExample: QuizParams[] = [
   {
     id: 1,
-    title: "Quiz1",
-    description: "some description",
+    title: "About all",
+    description: "test quiz with random questions",
     questions: [
       {
-        text: "question1",
+        points: 5,
+        type: "input",
+        id: 1,
+        text: "What is the capital of France?",
+        answer: "Paris",
+      },
+      {
+        points: 10,
         type: "radio",
+        id: 2,
+        text: "Which of the following is the largest planet in our solar system?",
         variants: [
-          { isRight: false, text: "variant1" },
-          { isRight: true, text: "variant2" },
-          { isRight: false, text: "variant1" },
+          {
+            isRight: false,
+            text: "Earth",
+          },
+          {
+            isRight: false,
+            text: "Mars",
+          },
+          {
+            isRight: true,
+            text: "Jupiter",
+          },
+          {
+            isRight: false,
+            text: "Saturn",
+          },
         ],
       },
       {
-        text: "question2",
-        type: "input",
-        answer: "question2",
-      },
-      {
-        text: "question3",
+        points: 15,
         type: "checkbox",
+        id: 3,
+        text: "Select all the prime numbers from the list below:",
         variants: [
-          { isRight: false, text: "javascript is cool" },
-          { isRight: true, text: "javascript is not cool" },
-          { isRight: true, text: "javascript is not cool" },
-          { isRight: true, text: "javascript is not cool" },
+          {
+            isRight: true,
+            text: "2",
+          },
+          {
+            isRight: true,
+            text: "3",
+          },
+          {
+            isRight: false,
+            text: "4",
+          },
+          {
+            isRight: true,
+            text: "5",
+          },
         ],
       },
     ],
   },
   {
     id: 2,
-    title: "Quiz2",
+    title: "About all2",
     time: 119,
-    description: "some description for quiz2 and somethig else",
+    description: "About all part 2)",
     questions: [
       {
-        text: "question1",
+        points: 7,
+        type: "input",
+        id: 4,
+        text: "Who wrote 'To Kill a Mockingbird'?",
+        answer: "Harper Lee",
+      },
+      {
+        points: 12,
         type: "radio",
+        id: 5,
+        text: "What is the smallest country in the world by area?",
         variants: [
-          { isRight: false, text: "variant1" },
-          { isRight: true, text: "variant2" },
-          { isRight: false, text: "variant1" },
+          {
+            isRight: false,
+            text: "Monaco",
+          },
+          {
+            isRight: false,
+            text: "San Marino",
+          },
+          {
+            isRight: true,
+            text: "Vatican City",
+          },
+          {
+            isRight: false,
+            text: "Liechtenstein",
+          },
         ],
       },
       {
-        text: "question2",
-        type: "radio",
+        points: 20,
+        type: "checkbox",
+        id: 6,
+        text: "Which of the following are programming languages?",
         variants: [
-          { isRight: false, text: "variant4" },
-          { isRight: false, text: "variant5" },
-          { isRight: true, text: "variant6" },
-        ],
-      },
-      {
-        text: "question3",
-        type: "radio",
-        variants: [
-          { isRight: false, text: "variant1" },
-          { isRight: false, text: "variant2" },
-          { isRight: true, text: "variant1" },
+          {
+            isRight: true,
+            text: "Python",
+          },
+          {
+            isRight: true,
+            text: "Java",
+          },
+          {
+            isRight: false,
+            text: "HTML",
+          },
+          {
+            isRight: true,
+            text: "C++",
+          },
         ],
       },
     ],
   },
   {
     id: 3,
-    title: "Quiz3",
-    description: "some description",
+    title: "About all3",
+    description: "About all part 3)",
     questions: [
       {
-        text: "question1",
+        points: 8,
+        type: "input",
+        id: 7,
+        text: "What is the chemical symbol for gold?",
+        answer: "Au",
+      },
+      {
+        points: 10,
         type: "radio",
+        id: 8,
+        text: "Which planet is known as the Red Planet?",
         variants: [
-          { isRight: false, text: "variant1" },
-          { isRight: true, text: "variant2" },
-          { isRight: false, text: "variant1" },
+          {
+            isRight: false,
+            text: "Venus",
+          },
+          {
+            isRight: true,
+            text: "Mars",
+          },
+          {
+            isRight: false,
+            text: "Jupiter",
+          },
+          {
+            isRight: false,
+            text: "Saturn",
+          },
         ],
       },
       {
-        text: "question2",
-        type: "radio",
+        points: 15,
+        type: "checkbox",
+        id: 9,
+        text: "Which of the following are prime numbers?",
         variants: [
-          { isRight: false, text: "variant4" },
-          { isRight: false, text: "variant5" },
-          { isRight: true, text: "variant6" },
-        ],
-      },
-      {
-        text: "question3",
-        type: "radio",
-        variants: [
-          { isRight: false, text: "variant1" },
-          { isRight: false, text: "variant2" },
-          { isRight: true, text: "variant1" },
+          {
+            isRight: true,
+            text: "7",
+          },
+          {
+            isRight: false,
+            text: "9",
+          },
+          {
+            isRight: true,
+            text: "11",
+          },
+          {
+            isRight: false,
+            text: "15",
+          },
         ],
       },
     ],
@@ -178,7 +265,7 @@ export default function Home() {
                   <QuizCard.Button
                     onClick={() => router.push(`/quiz/${quiz.id}`)}
                   >
-                    Розпочати
+                    Start
                   </QuizCard.Button>
                 </QuizCard>
               );

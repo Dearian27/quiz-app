@@ -27,7 +27,7 @@ const Timer = ({
           setTimer((prev) => (prev !== null ? prev - 1 : prev));
         }
       }
-    }, 200);
+    }, 1000);
 
     return () => clearInterval(interval);
   }, [submitTest]);

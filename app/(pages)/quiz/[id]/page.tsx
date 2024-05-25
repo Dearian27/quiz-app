@@ -345,7 +345,10 @@ export default function Page({ params }: QuizPageProps) {
           </span>
         </div>
         <div className="flex gap-4 justify-between">
-          <button className="rounded-md border-4 border-[#4c4cff] text-lg px-4 py-2 text-[#4c4cff] font-bold">
+          <button
+            onClick={() => router.push("/")}
+            className="rounded-md border-4 border-[#4c4cff] text-lg px-4 py-2 text-[#4c4cff] font-bold"
+          >
             Menu
           </button>
           <button
