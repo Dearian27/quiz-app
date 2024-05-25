@@ -28,7 +28,7 @@ const Header = ({
             <>
               <SearchBar />
               <div className="flex gap-4 items-center">
-                <Link href={""}>
+                <Link href={"https://github.com/Dearian27/quiz-app"}>
                   <FaGithub size={"2.2rem"} />
                 </Link>
                 <Link href="/editor/new">
