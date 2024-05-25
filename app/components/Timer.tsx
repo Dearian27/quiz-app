@@ -1,25 +1,36 @@
 "use client";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 
 const Timer = ({
-  end,
   time,
-  quizStarted,
+  submitTest,
 }: {
   time: number | null;
-  end: () => void;
-  quizStarted: boolean;
+  submitTest: () => void;
 }) => {
   const [timer, setTimer] = useState<number | null>(time);
+  const timerRef = useRef(timer);
+
   useEffect(() => {
+    timerRef.current = timer;
+  }, [timer]);
+
+  useEffect(() => {
+    if (timer === null) return;
+
     const interval = setInterval(() => {
-      if (quizStarted) {
-        setTimer((prev) => (prev ? prev - 1 : prev));
-        if (timer! - 1 === 0) end();
+      if (timerRef.current !== null) {
+        if (timerRef.current == 0) {
+          clearInterval(interval);
+          submitTest();
+        } else {
+          setTimer((prev) => (prev !== null ? prev - 1 : prev));
+        }
       }
-    }, 1000);
+    }, 200);
+
     return () => clearInterval(interval);
-  }, []);
+  }, [submitTest]);
 
   if (time === null || timer === null) return null;
 
